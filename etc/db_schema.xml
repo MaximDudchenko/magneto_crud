@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="phones" resource="default" engine="innodb" comment="Phones">
+        <column xsi:type="int" name="entity_id" unsigned="true" nullable="false" identity="true"
+                comment="Entity ID"/>
+        <column xsi:type="varchar" name="model" nullable="false" length="30" comment="Model"/>
+        <column xsi:type="varchar" name="brand" nullable="false" length="60" comment="Brand name"/>
+        <column xsi:type="decimal" name="price" scale="2" precision="20" unsigned="false" nullable="true"
+                comment="Price"/>
+        <column xsi:type="int" name="quantity" unsigned="false" nullable="false" identity="false"
+                default="0" comment="Quantity"/>
+        <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP"
+                comment="Creation Time"/>
+        <column xsi:type="timestamp" name="updated_at" on_update="true" nullable="false" default="CURRENT_TIMESTAMP"
+                comment="Update Time"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+        </constraint>
+    </table>
+</schema>

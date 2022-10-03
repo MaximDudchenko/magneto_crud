@@ -1,0 +1,81 @@
+<?php
+/**
+ * @var \Dudchenko\Phones\Block\Create $block
+ * @var \Magento\Framework\Escaper $escaper
+ */
+
+?>
+<legend class="legend">
+    <span><?= __('Add new phone') ?></span>
+</legend>
+<br>
+<form class="form form-edit-phone"
+      method="post"
+      action="<?= $escaper->escapeUrl($block->getUrl('phones/index/save')) ?>"
+      id="form-validate"
+      autocomplete="off"
+      data-mage-init='{"validation": {}}'>
+    <fieldset class="fieldset">
+        <input type="number"
+               id="id"
+               name="id"
+               class="input-text"
+               hidden>
+        <div class="field">
+            <label class="label" for="brand">
+                <span><?= __('Brand') ?></span>
+            </label>
+            <div class="control">
+                <input type="text"
+                       id="brand"
+                       name="brand"
+                       class="input-text"
+                       data-validate="{'required-entry':true}" >
+            </div>
+        </div>
+        <div class="field">
+            <label class="label" for="model">
+                <span><?= __('Model') ?></span>
+            </label>
+            <div class="control">
+                <input type="text"
+                       id="model"
+                       name="model"
+                       class="input-text"
+                       data-validate="{'required-entry':true}" >
+            </div>
+        </div>
+        <div class="field">
+            <label class="label" for="price">
+                <span><?= __('Price') ?></span>
+            </label>
+            <div class="control">
+                <input type="number"
+                       id="price"
+                       name="price"
+                       min="1"
+                       class="input-number"
+                       value="1"
+                       data-validate="{'required-number':true}">
+            </div>
+        </div>
+        <div class="field">
+            <label class="label" for="quantity">
+                <span><?= __('Quantity') ?></span>
+            </label>
+            <div class="control">
+                <input type="number"
+                       id="quantity"
+                       name="quantity"
+                       min="0"
+                       data-validate="{'required-number':true}">
+            </div>
+        </div>
+
+        <div class="primary">
+            <button type="submit" class="action primary">
+                <span><?= __('Save') ?></span>
+            </button>
+        </div>
+    </fieldset>
+</form>
