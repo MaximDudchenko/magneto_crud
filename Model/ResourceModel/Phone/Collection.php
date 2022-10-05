@@ -12,6 +12,6 @@ class Collection extends AbstractCollection
 
     protected function _construct()
     {
-        $this->_init('Dudchenko\Phones\Model\Phone', 'Dudchenko\Phones\Model\ResourceModel\Phone');
+        $this->_init(\Dudchenko\Phones\Model\Phone::class, \Dudchenko\Phones\Model\ResourceModel\Phone::class);
     }
 }

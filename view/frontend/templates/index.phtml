@@ -7,30 +7,37 @@
  */
 $phoneCollection = $block->getPhoneCollection();
 ?>
-<legend class="legend">
-    <span><?= __('Phones') ?></span>
-</legend>
-<br>
-<a class="action primary" href="<?= $escaper->escapeUrl($block->getUrl('phones/index/create')) ?>">Add new Entity</a>
-<table>
-    <tr>
-        <th><?= __('ID') ?></th>
-        <th><?= __('Brand') ?></th>
-        <th><?= __('Model') ?></th>
-        <th><?= __('Price') ?></th>
-        <th><?= __('Quantity') ?></th>
-        <th colspan="2"><?= __('Actions') ?></th>
-    </tr>
-    <?php foreach ($phoneCollection as $phone): ?>
-        <tr>
-            <td><?= $escaper->escapeHtml($phone->getId()) ?></td>
-            <td><?= $escaper->escapeHtml($phone->getBrand()) ?></td>
-            <td><?= $escaper->escapeHtml($phone->getModel()) ?></td>
-            <td><?= $escaper->escapeHtml($block->getPrice($phone)) ?></td>
-            <td><?= $escaper->escapeHtml($phone->getQuantity()) ?></td>
-            <td><a href="<?= $escaper->escapeUrl($block->getUrl('phones/index/edit').'id/'.$phone->getId()); ?>" class="action primary">Edit</a></td>
-            <td><a href="<?= $escaper->escapeUrl($block->getUrl('phones/index/delete').'?id='.$phone->getId()); ?>" class="action primary">Delete</a></td>
-        </tr>
-    <?php endforeach; ?>
-</table>
+<div class="block">
+    <div class="block-title">
+        <h2><?= __('Phones') ?></h2>
+    </div>
+    <br>
+    <div class="block-content">
+        <a class="action primary" href="<?= $escaper->escapeUrl($block->getUrl('phones/index/create')) ?>">Add new Entity</a>
+        <table>
+            <tr>
+                <th><?= __('ID') ?></th>
+                <th><?= __('Brand') ?></th>
+                <th><?= __('Model') ?></th>
+                <th><?= __('Price') ?></th>
+                <th><?= __('Quantity') ?></th>
+                <th colspan="2"><?= __('Actions') ?></th>
+            </tr>
+            <?php foreach ($phoneCollection as $phone): ?>
+                <tr>
+                    <td><?= $escaper->escapeHtml($phone->getId()) ?></td>
+                    <td><?= $escaper->escapeHtml($phone->getBrand()) ?></td>
+                    <td><?= $escaper->escapeHtml($phone->getModel()) ?></td>
+                    <td><?= $escaper->escapeHtml($block->getPrice($phone)) ?></td>
+                    <td><?= $escaper->escapeHtml($phone->getQuantity()) ?></td>
+                    <td><a href="<?= $escaper->escapeUrl($block->getUrl('phones/index/edit').'id/'.$phone->getId()); ?>" class="action primary">Edit</a></td>
+                    <td><a href="<?= $escaper->escapeUrl($block->getUrl('phones/index/delete').'?id='.$phone->getId()); ?>" class="action primary">Delete</a></td>
+                </tr>
+            <?php endforeach; ?>
+        </table>
+    </div>
+</div>
+
+
+
 

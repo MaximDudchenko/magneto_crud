@@ -5,21 +5,23 @@ namespace Dudchenko\Phones\Controller\Index;
 use \Magento\Framework\App\Action\Action;
 use \Magento\Framework\App\Action\Context;
 use \Magento\Framework\View\Result\PageFactory;
-use \Dudchenko\Phones\Model\Phone;
 use \Dudchenko\Phones\Model\PhoneFactory;
+use Dudchenko\Phones\Api\PhoneRepositoryInterface;
 
 class Delete extends Action
 {
+    protected $pageFactory;
     protected $phoneFactory;
+    protected $phoneRepository;
 
     public function __construct(
         Context $context,
+        PhoneFactory $phoneFactory,
         PageFactory $pageFactory,
-        PhoneFactory $phoneFactory
     ) {
         $this->pageFactory = $pageFactory;
         $this->phoneFactory = $phoneFactory;
-        return parent::__construct($context);
+        parent::__construct($context);
     }
 
     /**

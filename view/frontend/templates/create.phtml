@@ -5,10 +5,6 @@
  */
 
 ?>
-<legend class="legend">
-    <span><?= __('Add new phone') ?></span>
-</legend>
-<br>
 <form class="form form-edit-phone"
       method="post"
       action="<?= $escaper->escapeUrl($block->getUrl('phones/index/save')) ?>"
@@ -16,6 +12,10 @@
       autocomplete="off"
       data-mage-init='{"validation": {}}'>
     <fieldset class="fieldset">
+        <legend class="legend">
+            <span><?= __('Add new phone') ?></span>
+        </legend>
+        <br>
         <input type="number"
                id="id"
                name="id"

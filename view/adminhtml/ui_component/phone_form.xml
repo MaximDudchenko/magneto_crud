@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">phone_form.phone_form_data_source</item>
+            <item name="deps" xsi:type="string">phone_form.phone_form_data_source</item>
+        </item>
+        <item name="label" xsi:type="string" translate="true">Phone Information</item>
+        <item name="config" xsi:type="array">
+            <item name="dataScope" xsi:type="string">data</item>
+            <item name="namespace" xsi:type="string">phone_form</item>
+        </item>
+        <item name="template" xsi:type="string">templates/form/collapsible</item>
+    </argument>
+    <settings>
+        <buttons>
+            <button name="save" class="Dudchenko\Phones\Block\Adminhtml\Button\Save"/>
+            <button name="back" class="Dudchenko\Phones\Block\Adminhtml\Button\Back"/>
+        </buttons>
+        <namespace>phone_form</namespace>
+        <dataScope>data</dataScope>
+        <deps>
+            <dep>phone_form.block_form_data_source</dep>
+        </deps>
+    </settings>
+    <dataSource name="phone_form_data_source">
+        <argument name="dataProvider" xsi:type="configurableObject">
+            <argument name="class" xsi:type="string">Dudchenko\Phones\Model\DataProvider</argument>
+            <argument name="name" xsi:type="string">phone_form_data_source</argument>
+            <argument name="primaryFieldName" xsi:type="string">entity_id</argument>
+            <argument name="requestFieldName" xsi:type="string">entity_id</argument>
+        </argument>
+        <argument name="data" xsi:type="array">
+            <item name="js_config" xsi:type="array">
+                <item name="component" xsi:type="string">Magento_Ui/js/form/provider</item>
+            </item>
+        </argument>
+        <settings>
+            <submitUrl path="phones/index/save"/>
+        </settings>
+    </dataSource>
+    <fieldset name="phone_details">
+        <settings>
+            <label/>
+        </settings>
+<!--        <argument name="data" xsi:type="array">-->
+<!--            <item name="config" xsi:type="array">-->
+<!--                <item name="collapsible" xsi:type="boolean">true</item>-->
+<!--                <item name="label" xsi:type="string" translate="true">Phone Details</item>-->
+<!--                <item name="sortOrder" xsi:type="number">20</item>-->
+<!--            </item>-->
+<!--        </argument>-->
+        <field name="entity_id">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="dataType" xsi:type="string">text</item>
+                    <item name="label" xsi:type="string" translate="true">Phone Id</item>
+                    <item name="formElement" xsi:type="string">input</item>
+                    <item name="source" xsi:type="string">phone</item>
+                    <item name="dataScope" xsi:type="string">entity_id</item>
+                </item>
+            </argument>
+            <settings>
+                <visible>false</visible>
+            </settings>
+        </field>
+        <field name="brand">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="dataType" xsi:type="string">text</item>
+                    <item name="label" xsi:type="string" translate="true">Brand</item>
+                    <item name="formElement" xsi:type="string">input</item>
+                    <item name="source" xsi:type="string">phone</item>
+                    <item name="dataScope" xsi:type="string">brand</item>
+                </item>
+            </argument>
+        </field>
+        <field name="model">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="dataType" xsi:type="string">text</item>
+                    <item name="label" xsi:type="string" translate="true">Model</item>
+                    <item name="formElement" xsi:type="string">input</item>
+                    <item name="source" xsi:type="string">phone</item>
+                    <item name="dataScope" xsi:type="string">model</item>
+                </item>
+            </argument>
+        </field>
+        <field name="price">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="dataType" xsi:type="string">float</item>
+                    <item name="label" xsi:type="string" translate="true">Price</item>
+                    <item name="formElement" xsi:type="string">input</item>
+                    <item name="source" xsi:type="string">phone</item>
+                    <item name="dataScope" xsi:type="string">price</item>
+                </item>
+            </argument>
+        </field>
+        <field name="quantity">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="dataType" xsi:type="string">int</item>
+                    <item name="label" xsi:type="string" translate="true">Quantity</item>
+                    <item name="formElement" xsi:type="string">input</item>
+                    <item name="source" xsi:type="string">phone</item>
+                    <item name="dataScope" xsi:type="string">quantity</item>
+                </item>
+            </argument>
+        </field>
+    </fieldset>
+</form>

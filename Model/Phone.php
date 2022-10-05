@@ -2,10 +2,11 @@
 
 namespace Dudchenko\Phones\Model;
 
-use \Magento\Framework\Model\AbstractModel;
-use \Magento\Framework\DataObject\IdentityInterface;
+use Dudchenko\Phones\Api\Data\PhoneInterface;
+use Magento\Framework\DataObject\IdentityInterface;
+use Magento\Framework\Model\AbstractModel;
 
-class Phone extends AbstractModel implements IdentityInterface
+class Phone extends AbstractModel implements PhoneInterface, IdentityInterface
 {
     const CACHE_TAG = 'dudchenko_phones';
 
@@ -15,7 +16,7 @@ class Phone extends AbstractModel implements IdentityInterface
 
     protected function _construct()
     {
-        $this->_init('Dudchenko\Phones\Model\ResourceModel\Phone');
+        $this->_init(\Dudchenko\Phones\Model\ResourceModel\Phone::class);
     }
 
     /**
@@ -26,23 +27,53 @@ class Phone extends AbstractModel implements IdentityInterface
         return [self::CACHE_TAG . '_' . $this->getId()];
     }
 
+    public function getId()
+    {
+        return $this->getData(self::ENTITY_ID);
+    }
+
     public function getBrand(): string
     {
-        return $this->getData('brand');
+        return (string)$this->getData(self::BRAND);
     }
 
     public function getModel(): string
     {
-        return $this->getData('model');
+        return (string)$this->getData(self::MODEL);
     }
 
     public function getPrice(): float
     {
-        return $this->getData('price');
+        return (float)$this->getData(self::PRICE);
     }
 
     public function getQuantity(): int
     {
-        return $this->getData('quantity');
+        return (int)$this->getData(self::QUANTITY);
+    }
+
+    public function setId($value)
+    {
+        return $this->setData(self::ENTITY_ID, $value);
+    }
+
+    public function setBrand(string $brand): PhoneInterface
+    {
+        return $this->setData(self::BRAND, $brand);
+    }
+
+    public function setModel(string $model): PhoneInterface
+    {
+        return $this->setData(self::MODEL, $model);
+    }
+
+    public function setPrice(float $price): PhoneInterface
+    {
+        return $this->setData(self::PRICE, $price);
+    }
+
+    public function setQuantity(int $quantity): PhoneInterface
+    {
+        return $this->setData(self::QUANTITY, $quantity);
     }
 }
