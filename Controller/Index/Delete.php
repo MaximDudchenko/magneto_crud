@@ -16,12 +16,16 @@ class Delete extends Action
 
     public function __construct(
         Context $context,
-        PhoneFactory $phoneFactory,
         PageFactory $pageFactory,
-    ) {
+        PhoneFactory $phoneFactory,
+        PhoneRepositoryInterface $phoneRepository
+    )
+    {
         $this->pageFactory = $pageFactory;
         $this->phoneFactory = $phoneFactory;
+        $this->phoneRepository = $phoneRepository;
         parent::__construct($context);
+
     }
 
     /**
@@ -29,8 +33,12 @@ class Delete extends Action
      */
     public function execute()
     {
+        dd($this->phoneRepository);
         $id = $this->_request->getParam('id');
+        /** @var \Dudchenko\Phones\Model\Phone $phone */
         $phone = $this->phoneFactory->create();
+        $phone = $this->phoneRepository->getById($id);
+        dd($phone);
         $phone = $phone->setId($id);
         $phone->delete();
         return $this->_redirect('phones/index');

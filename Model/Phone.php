@@ -27,11 +27,6 @@ class Phone extends AbstractModel implements PhoneInterface, IdentityInterface
         return [self::CACHE_TAG . '_' . $this->getId()];
     }
 
-    public function getId()
-    {
-        return $this->getData(self::ENTITY_ID);
-    }
-
     public function getBrand(): string
     {
         return (string)$this->getData(self::BRAND);
@@ -50,11 +45,6 @@ class Phone extends AbstractModel implements PhoneInterface, IdentityInterface
     public function getQuantity(): int
     {
         return (int)$this->getData(self::QUANTITY);
-    }
-
-    public function setId($value)
-    {
-        return $this->setData(self::ENTITY_ID, $value);
     }
 
     public function setBrand(string $brand): PhoneInterface

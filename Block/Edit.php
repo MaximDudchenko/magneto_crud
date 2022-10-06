@@ -2,6 +2,7 @@
 
 namespace Dudchenko\Phones\Block;
 
+use Dudchenko\Phones\Model\Phone;
 use \Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 use \Magento\Framework\Registry;

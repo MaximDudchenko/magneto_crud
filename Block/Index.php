@@ -7,28 +7,30 @@ use \Magento\Framework\View\Element\Template\Context;
 use \Magento\Framework\Pricing\Helper\Data;
 use \Dudchenko\Phones\Model\Phone;
 use \Dudchenko\Phones\Model\PhoneFactory;
+use Dudchenko\Phones\Model\ResourceModel\Phone\CollectionFactory;
 
 
 class Index extends Template
 {
-    protected $phoneFactory;
+    protected $phoneCollectionFactory;
     protected $priceHelper;
 
     public function __construct(
         Context $context,
-        PhoneFactory $phoneFactory,
+        CollectionFactory $phoneCollectionFactory,
         Data $priceHelper,
         array $data = [])
     {
-        $this->phoneFactory = $phoneFactory;
+        $this->phoneCollectionFactory = $phoneCollectionFactory;
         $this->priceHelper = $priceHelper;
         parent::__construct($context, $data);
     }
 
     public function getPhoneCollection()
     {
-        $collection = $this->phoneFactory->create();
-        return $collection->getCollection();
+        /** @var \Dudchenko\Phones\Model\ResourceModel\Phone\Collection $collection */
+        $collection = $this->phoneCollectionFactory->create();
+        return $collection->getItems();
     }
 
     public function getPrice(Phone $phone)

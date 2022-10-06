@@ -20,6 +20,13 @@ interface PhoneRepositoryInterface
     public function getById($id): PhoneInterface;
 
     /**
+     * @param SearchCriteriaInterface $searchCriteria
+     * @return \Dudchenko\Phones\Api\Data\PhoneSearchResultsInterface
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    public function getList(SearchCriteriaInterface $searchCriteria);
+
+    /**
      * @param PhoneInterface $phone
      * @return bool
      */
