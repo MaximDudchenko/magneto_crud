@@ -58,22 +58,21 @@ class Save extends Action
 
         if ($this->getRequest()->isPost()) {
             $input = $this->getRequest()->getPostValue();
-            $input['entity_id'] = empty($input['entity_id']) ? null  : $input['entity_id'];
-            $id = $input['entity_id'];
+            if ($input) {
+                $input['entity_id'] = empty($input['entity_id']) ? null  : $input['entity_id'];
+                $id = $input['entity_id'];
 
-            /** @var \Dudchenko\Phones\Model\Phone $phone */
-            $phone = $this->phoneFactory->create();
+                /** @var \Dudchenko\Phones\Model\Phone $phone */
+                $phone = $this->phoneFactory->create();
 
-            if ($id) {
-                $phone = $this->phoneRepository->getById($id);
-            } else {
-                $phone->setId(null);
+                if ($id) {
+                    $phone = $this->phoneRepository->getById($id);
+                }
+
+                $phone->setData($input);
+
+                $this->phoneRepository->save($phone);
             }
-
-            $phone->setData($input);
-
-            $this->phoneRepository->save($phone);
-
             return $resultRedirect->setPath('phones/index/');
         }
     }

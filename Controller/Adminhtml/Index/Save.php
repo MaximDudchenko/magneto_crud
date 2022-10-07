@@ -78,17 +78,15 @@ class Save extends Action implements HttpPostActionInterface
         $input = $this->getRequest()->getPostValue();
 
         if ($input) {
-            if (empty($input['entity_id'])) {
-                $input['entity_id'] = null;
-            }
+            $input['entity_id'] = empty($input['entity_id']) ? null  : $input['entity_id'];
+            $id = $input['entity_id'];
 
             /** @var \Dudchenko\Phones\Model\Phone $phone */
             $phone = $this->phoneFactory->create();
 
-            $id = $this->getRequest()->getParam('entity_id');
             if ($id) {
                 try {
-                    $this->phoneRepository->getById($id);
+                    $phone = $this->phoneRepository->getById($id);
                 } catch (LocalizedException $e) {
                     $this->messageManager->addErrorMessage(__('This phone no longer exists.'));
                     return $resultRedirect->setPath('*/*/');
@@ -99,6 +97,7 @@ class Save extends Action implements HttpPostActionInterface
 
             try {
                 $this->phoneRepository->save($phone);
+                dd('saved');
                 $this->messageManager->addSuccessMessage(__('You saved the phone.'));
                 $this->dataPersistor->clear('phone');
                 return $this->redirect($resultRedirect);
