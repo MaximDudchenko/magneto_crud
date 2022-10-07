@@ -2,45 +2,50 @@
 
 namespace Dudchenko\Phones\Controller\Index;
 
-use \Magento\Framework\App\Action\Action;
-use \Magento\Framework\App\Action\Context;
-use \Magento\Framework\View\Result\PageFactory;
-use \Dudchenko\Phones\Model\PhoneFactory;
+use Magento\Backend\Model\View\Result\Redirect;
+use Magento\Framework\App\Action\Action;
+use Magento\Framework\App\Action\Context;
 use Dudchenko\Phones\Api\PhoneRepositoryInterface;
+use Magento\Backend\Model\View\Result\RedirectFactory as ResultRedirectFactory;
+use Magento\Framework\App\ResponseInterface;
+use Magento\Framework\Controller\ResultInterface;
 
 class Delete extends Action
 {
-    protected $pageFactory;
-    protected $phoneFactory;
+    protected $resultRedirectFactory;
+
+    /**
+     * @var PhoneRepositoryInterface
+     */
     protected $phoneRepository;
 
+    /**
+     * @param Context $context
+     * @param PhoneRepositoryInterface $phoneRepository
+     */
     public function __construct(
         Context $context,
-        PageFactory $pageFactory,
-        PhoneFactory $phoneFactory,
+        ResultRedirectFactory $resultRedirectFactory,
         PhoneRepositoryInterface $phoneRepository
     )
     {
-        $this->pageFactory = $pageFactory;
-        $this->phoneFactory = $phoneFactory;
+        $this->resultRedirectFactory = $resultRedirectFactory;
         $this->phoneRepository = $phoneRepository;
         parent::__construct($context);
-
     }
 
+
     /**
-     * @inheritDoc
+     * @return Redirect|ResponseInterface|ResultInterface
      */
     public function execute()
     {
-        dd($this->phoneRepository);
-        $id = $this->_request->getParam('id');
-        /** @var \Dudchenko\Phones\Model\Phone $phone */
-        $phone = $this->phoneFactory->create();
-        $phone = $this->phoneRepository->getById($id);
-        dd($phone);
-        $phone = $phone->setId($id);
-        $phone->delete();
-        return $this->_redirect('phones/index');
+        /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
+        $resultRedirect = $this->resultRedirectFactory->create();
+
+        $id = $this->_request->getParam('entity_id');
+        $this->phoneRepository->deleteById($id);
+
+        return $resultRedirect->setPath('phones/index/');
     }
 }

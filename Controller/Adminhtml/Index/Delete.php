@@ -4,28 +4,43 @@ namespace Dudchenko\Phones\Controller\Adminhtml\Index;
 
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
-use Magento\Backend\Model\View\Result\RedirectFactory;
-use Dudchenko\Phones\Model\PhoneFactory;
+use Magento\Backend\Model\View\Result\Redirect;
+use Magento\Backend\Model\View\Result\RedirectFactory as ResultRedirectFactory;
+use Magento\Framework\App\ResponseInterface;
+use Magento\Framework\Controller\ResultInterface;
+use Dudchenko\Phones\Api\PhoneRepositoryInterface;
 
 class Delete extends Action
 {
+    /**
+     * @var ResultRedirectFactory
+     */
+    protected $resultRedirectFactory;
 
-    protected $redirectFactory;
-    protected $phoneFactory;
+    /**
+     * @var PhoneRepositoryInterface
+     */
+    protected $phoneRepository;
 
+
+    /**
+     * @param Context $context
+     * @param ResultRedirectFactory $resultRedirectFactory
+     * @param PhoneRepositoryInterface $phoneRepository
+     */
     public function __construct(
         Context $context,
-        RedirectFactory $redirectFactory,
-        PhoneFactory $phoneFactory
+        ResultRedirectFactory $resultRedirectFactory,
+        PhoneRepositoryInterface $phoneRepository
     )
     {
-        $this->redirectFactory = $redirectFactory;
-        $this->phoneFactory = $phoneFactory;
+        $this->resultRedirectFactory = $resultRedirectFactory;
+        $this->phoneRepository = $phoneRepository;
         parent::__construct($context);
     }
 
     /**
-     * @inheritDoc
+     * @return Redirect|ResponseInterface|ResultInterface
      */
     public function execute()
     {
@@ -35,10 +50,7 @@ class Delete extends Action
         $id = $this->getRequest()->getParam('entity_id');
         if ($id) {
             try {
-                /** @var \Dudchenko\Phones\Model\Phone $phone */
-                $phone = $this->phoneFactory->create();
-                $phone->load($id);
-                $phone->delete();
+                $this->phoneRepository->deleteById($id);
 
                 $this->messageManager->addSuccessMessage(__('You deleted the phone.'));
 

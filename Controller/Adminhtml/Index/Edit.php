@@ -3,17 +3,22 @@
 namespace Dudchenko\Phones\Controller\Adminhtml\Index;
 
 use Magento\Backend\App\Action;
-use \Magento\Backend\App\Action\Context;
-use \Magento\Framework\Registry;
-use \Magento\Framework\View\Result\PageFactory;
-use \Dudchenko\Phones\Model\PhoneFactory;
+use Magento\Backend\App\Action\Context;
+use Magento\Backend\Model\View\Result\Page;
+use Magento\Backend\Model\View\Result\Redirect;
+use Magento\Framework\App\ResponseInterface;
+use Magento\Framework\Controller\ResultInterface;
+use Magento\Framework\Registry as CoreRegistry;
+use Magento\Framework\View\Result\PageFactory as ResultPageFactory;
+use Dudchenko\Phones\Model\PhoneFactory;
+use Dudchenko\Phones\Api\PhoneRepositoryInterface;
 
 class Edit extends Action
 {
     /**
-     * @var PageFactory
+     * @var ResultPageFactory
      */
-    protected $pageFactory;
+    protected $resultPageFactory;
 
     /**
      * @var PhoneFactory
@@ -21,28 +26,39 @@ class Edit extends Action
     protected $phoneFactory;
 
     /**
-     * @var Registry
+     * @var CoreRegistry
      */
     protected $coreRegistry;
 
     /**
+     * @var PhoneRepositoryInterface
+     */
+    protected $phoneRepository;
+
+    /**
      * @param Context $context
-     * @param Registry $coreRegistry
-     * @param PageFactory $pageFactory
+     * @param CoreRegistry $coreRegistry
+     * @param ResultPageFactory $resultPageFactory
      * @param PhoneFactory $phoneFactory
+     * @param PhoneRepositoryInterface $phoneRepository
      */
     public function __construct(
         Context $context,
-        Registry $coreRegistry,
-        PageFactory $pageFactory,
-        PhoneFactory $phoneFactory
+        CoreRegistry $coreRegistry,
+        ResultPageFactory $resultPageFactory,
+        PhoneFactory $phoneFactory,
+        PhoneRepositoryInterface $phoneRepository
     ) {
-        $this->pageFactory = $pageFactory;
+        $this->resultPageFactory = $resultPageFactory;
         $this->phoneFactory = $phoneFactory;
         $this->coreRegistry = $coreRegistry;
+        $this->phoneRepository = $phoneRepository;
         parent::__construct($context);
     }
 
+    /**
+     * @return Page|Redirect|ResponseInterface|ResultInterface
+     */
     public function execute()
     {
         $id = $this->getRequest()->getParam('entity_id');
@@ -51,7 +67,7 @@ class Edit extends Action
         $phone = $this->phoneFactory->create();
 
         if ($id) {
-            $phone->load($id);
+            $phone = $this->phoneRepository->getById($id);
             if (!$phone->getId()) {
                 $this->messageManager->addErrorMessage(__('This phone not exists.'));
                 /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
@@ -62,7 +78,7 @@ class Edit extends Action
         $this->coreRegistry->register('phone', $phone);
 
         /** @var \Magento\Backend\Model\View\Result\Page $resultPage */
-        $resultPage = $this->pageFactory->create();
+        $resultPage = $this->resultPageFactory->create();
         $resultPage->getConfig()->getTitle()->prepend($phone->getId() ? $phone->getBrand() . ' ' . $phone->getModel() : __('New Phone'));
         return $resultPage;
     }

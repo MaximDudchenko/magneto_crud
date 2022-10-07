@@ -43,25 +43,25 @@ interface PhoneInterface
 
     /**
      * @param string $brand
-     * @return PhoneInterface
+     * @return mixed
      */
-    public function setBrand(string $brand): PhoneInterface;
+    public function setBrand(string $brand);
 
     /**
      * @param string $model
-     * @return PhoneInterface
+     * @return mixed
      */
-    public function setModel(string $model): PhoneInterface;
+    public function setModel(string $model);
 
     /**
      * @param float $price
      * @return mixed
      */
-    public function setPrice(float $price): PhoneInterface;
+    public function setPrice(float $price);
 
     /**
      * @param int $quantity
-     * @return PhoneInterface
+     * @return mixed
      */
-    public function setQuantity(int $quantity): PhoneInterface;
+    public function setQuantity(int $quantity);
 }

@@ -2,10 +2,10 @@
 
 namespace Dudchenko\Phones\Model;
 
+use Dudchenko\Phones\Api\Data\PhoneSearchResultsInterface;
 use Magento\Framework\Api\DataObjectHelper;
-use Dudchenko\Phones\Api\Data\PhoneInterface;
-use Dudchenko\Phones\Api\Data\PhoneInterfaceFactory;
 use Dudchenko\Phones\Api\PhoneRepositoryInterface;
+use Dudchenko\Phones\Api\Data\PhoneInterface;
 use Dudchenko\Phones\Model\ResourceModel\Phone as ResourcePhone;
 use Magento\Framework\Api\Search\FilterGroup;
 use Magento\Framework\Api\SearchCriteriaInterface;
@@ -18,29 +18,59 @@ use Dudchenko\Phones\Model\ResourceModel\Phone\CollectionFactory as PhoneCollect
 
 class PhoneRepository implements PhoneRepositoryInterface
 {
+    /**
+     * @var ResourcePhone
+     */
     protected $resource;
+
+    /**
+     * @var PhoneCollectionFactory
+     */
     protected $phoneCollectionFactory;
+
+    /**
+     * @var SearchCriteriaInterface
+     */
     protected $searchResultsFactory;
-    protected $phoneInterfaceFactory;
+
+    /**
+     * @var PhoneFactory
+     */
+    protected $phoneFactory;
+
+    /**
+     * @var DataObjectHelper
+     */
     protected $dataObjectHelper;
 
 
-    public function __constructor(
+    /**
+     * @param ResourcePhone $resource
+     * @param PhoneCollectionFactory $phoneCollectionFactory
+     * @param SearchCriteriaInterface $searchResultsFactory
+     * @param PhoneFactory $phoneFactory
+     * @param DataObjectHelper $dataObjectHelper
+     */
+    public function __construct(
         ResourcePhone $resource,
         PhoneCollectionFactory $phoneCollectionFactory,
         SearchCriteriaInterface $searchResultsFactory,
-        PhoneInterfaceFactory $phoneInterfaceFactory,
+        PhoneFactory $phoneFactory,
         DataObjectHelper $dataObjectHelper
     )
     {
         $this->resource = $resource;
         $this->phoneCollectionFactory = $phoneCollectionFactory;
         $this->searchResultsFactory = $searchResultsFactory;
-        $this->phoneInterfaceFactory = $phoneInterfaceFactory;
+        $this->phoneFactory = $phoneFactory;
         $this->dataObjectHelper = $dataObjectHelper;
     }
 
-
+    /**
+     * @param PhoneInterface $phone
+     * @return PhoneInterface
+     * @throws CouldNotSaveException
+     */
     public function save(PhoneInterface $phone): PhoneInterface
     {
         try {
@@ -51,16 +81,28 @@ class PhoneRepository implements PhoneRepositoryInterface
         return $phone;
     }
 
+    /**
+     * @param $id
+     * @return PhoneInterface
+     * @throws NoSuchEntityException
+     */
     public function getById($id): PhoneInterface
     {
-        $phone = $this->phoneInterfaceFactory->create();
+        /** @var \Dudchenko\Phones\Model\Phone $phone */
+        $phone = $this->phoneFactory->create();
+
         $this->resource->load($phone, $id);
+
         if (!$phone->getId()) {
             throw new NoSuchEntityException(__('The CMS block with the "%1" ID doesn\'t exist.', $id));
         }
         return $phone;
     }
 
+    /**
+     * @param SearchCriteriaInterface $searchCriteria
+     * @return PhoneSearchResultsInterface
+     */
     public function getList(SearchCriteriaInterface $searchCriteria)
     {
         /** @var \Dudchenko\Phones\Api\Data\PhoneSearchResultsInterface $searchResults */
@@ -102,6 +144,11 @@ class PhoneRepository implements PhoneRepositoryInterface
         return $searchResults->setItems($data);
     }
 
+    /**
+     * @param PhoneInterface $phone
+     * @return bool
+     * @throws CouldNotDeleteException
+     */
     public function delete(PhoneInterface $phone): bool
     {
         try {
@@ -112,6 +159,12 @@ class PhoneRepository implements PhoneRepositoryInterface
         return true;
     }
 
+    /**
+     * @param $id
+     * @return bool
+     * @throws CouldNotDeleteException
+     * @throws NoSuchEntityException
+     */
     public function deleteById($id): bool
     {
         return $this->delete($this->getById($id));

@@ -19,7 +19,7 @@ class Phone extends AbstractDb
     }
 
     /**
-     * @inheritDoc
+     * @return void
      */
     protected function _construct()
     {

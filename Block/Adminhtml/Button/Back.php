@@ -6,7 +6,9 @@ use Magento\Framework\View\Element\UiComponent\Control\ButtonProviderInterface;
 
 class Back extends Generic implements ButtonProviderInterface
 {
-
+    /**
+     * @return array
+     */
     public function getButtonData()
     {
         return [
@@ -17,6 +19,9 @@ class Back extends Generic implements ButtonProviderInterface
         ];
     }
 
+    /**
+     * @return string
+     */
     public function getBackUrl()
     {
         return $this->getUrl('*/*/');

@@ -7,7 +7,14 @@ use Magento\Cms\Api\PageRepositoryInterface;
 
 class Generic
 {
+    /**
+     * @var Context
+     */
     protected $context;
+
+    /**
+     * @var PageRepositoryInterface
+     */
     protected $pageRepository;
 
     public function __construct(
@@ -18,6 +25,11 @@ class Generic
         $this->pageRepository = $pageRepository;
     }
 
+    /**
+     * @param $route
+     * @param $params
+     * @return string
+     */
     public function getUrl($route = '', $params = [])
     {
         return $this->context->getUrlBuilder()->getUrl($route, $params);

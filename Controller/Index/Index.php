@@ -2,34 +2,38 @@
 
 namespace Dudchenko\Phones\Controller\Index;
 
-//use Magento\Backend\App\Action;
-//use Magento\Backend\App\Action\Context;
-
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Action\HttpGetActionInterface;
-use Magento\Framework\View\Result\PageFactory;
+use Magento\Framework\App\ResponseInterface;
+use Magento\Framework\Controller\ResultInterface;
+use Magento\Framework\View\Result\Page;
+use Magento\Framework\View\Result\PageFactory as ResultPageFactory;
 
 class Index extends Action implements HttpGetActionInterface
 {
     /**
-     * @var PageFactory
+     * @var ResultPageFactory
      */
-    protected $pageFactory;
+    protected $resultPageFactory;
 
+    /**
+     * @param Context $context
+     * @param ResultPageFactory $resultPageFactory
+     */
     public function __construct(
         Context $context,
-        PageFactory $pageFactory,
+        ResultPageFactory $resultPageFactory
     ) {
-        $this->pageFactory = $pageFactory;
+        $this->resultPageFactory = $resultPageFactory;
         parent::__construct($context);
     }
 
     /**
-     * @inheritDoc
+     * @return ResponseInterface|ResultInterface|Page
      */
     public function execute()
     {
-        return $this->pageFactory->create();
+        return $this->resultPageFactory->create();
     }
 }

@@ -2,5 +2,4 @@
 
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <preference for="Dudchenko\Phones\Api\PhoneRepositoryInterface" type="Dudchenko\Phones\Model\PhoneRepository"/>
-    <preference for="Dudchenko\Phones\Api\Data\PhoneInterface" type="Dudchenko\Phones\Model\Phone"/>
 </config>

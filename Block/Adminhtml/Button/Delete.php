@@ -2,12 +2,13 @@
 
 namespace Dudchenko\Phones\Block\Adminhtml\Button;
 
-use Magento\Backend\Block\Widget\Context;
 use Magento\Framework\View\Element\UiComponent\Control\ButtonProviderInterface;
 
 class Delete extends Generic implements ButtonProviderInterface
 {
-
+    /**
+     * @return array
+     */
     public function getButtonData()
     {
         $data = [];
@@ -25,6 +26,9 @@ class Delete extends Generic implements ButtonProviderInterface
         return $data;
     }
 
+    /**
+     * @return string
+     */
     public function getDeleteUrl()
     {
         $id = $this->context->getRequest()->getParam('entity_id');

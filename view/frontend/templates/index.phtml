@@ -2,10 +2,13 @@
 /**
  * Category view template
  *
- * @var \Dudchenko\Phones\Block\Index $block
+ * @var \Magento\Framework\View\Element\Template $block
+ * @var \Dudchenko\Phones\ViewModel\Index $viewModel
  * @var \Magento\Framework\Escaper $escaper
  */
-$phoneCollection = $block->getPhoneCollection();
+
+$viewModel = $block->getViewModel();
+$phoneCollection = $viewModel->getPhoneCollection();
 ?>
 <div class="block">
     <div class="block-title">
@@ -28,10 +31,10 @@ $phoneCollection = $block->getPhoneCollection();
                     <td><?= $escaper->escapeHtml($phone->getId()) ?></td>
                     <td><?= $escaper->escapeHtml($phone->getBrand()) ?></td>
                     <td><?= $escaper->escapeHtml($phone->getModel()) ?></td>
-                    <td><?= $escaper->escapeHtml($block->getPrice($phone)) ?></td>
+                    <td><?= $escaper->escapeHtml($viewModel->getPrice($phone)) ?></td>
                     <td><?= $escaper->escapeHtml($phone->getQuantity()) ?></td>
-                    <td><a href="<?= $escaper->escapeUrl($block->getUrl('phones/index/edit').'id/'.$phone->getId()); ?>" class="action primary">Edit</a></td>
-                    <td><a href="<?= $escaper->escapeUrl($block->getUrl('phones/index/delete').'?id='.$phone->getId()); ?>" class="action primary">Delete</a></td>
+                    <td><a href="<?= $escaper->escapeUrl($block->getUrl('phones/index/edit').'entity_id/'.$phone->getId()); ?>" class="action primary">Edit</a></td>
+                    <td><a href="<?= $escaper->escapeUrl($block->getUrl('phones/index/delete').'?entity_id='.$phone->getId()); ?>" class="action primary">Delete</a></td>
                 </tr>
             <?php endforeach; ?>
         </table>

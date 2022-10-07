@@ -2,16 +2,37 @@
 
 namespace Dudchenko\Phones\Model;
 
-use \Magento\Ui\DataProvider\AbstractDataProvider;
+use Magento\Ui\DataProvider\AbstractDataProvider;
+use Dudchenko\Phones\Model\ResourceModel\Phone\Collection;
 use Dudchenko\Phones\Model\ResourceModel\Phone\CollectionFactory;
 use Magento\Framework\App\Request\DataPersistorInterface;
 
 class DataProvider extends AbstractDataProvider
 {
+    /**
+     * @var Collection
+     */
     protected $collection;
+
+    /**
+     * @var DataPersistorInterface
+     */
     protected $dataPersistor;
+
+    /**
+     * @var array
+     */
     protected $loadedData;
 
+    /**
+     * @param $name
+     * @param $primaryFieldName
+     * @param $requestFieldName
+     * @param CollectionFactory $collectionFactory
+     * @param DataPersistorInterface $dataPersistor
+     * @param array $meta
+     * @param array $data
+     */
     public function __construct(
         $name,
         $primaryFieldName,
@@ -27,8 +48,6 @@ class DataProvider extends AbstractDataProvider
     }
 
     /**
-     * Get data
-     *
      * @return array
      */
     public function getData()
@@ -37,7 +56,7 @@ class DataProvider extends AbstractDataProvider
             return $this->loadedData;
         }
 
-        $items = $this->collection->load();
+        $items = $this->collection->getItems();
         /** @var \Dudchenko\Phones\Model\Phone $phone */
         foreach ($items as $phone) {
             $this->loadedData[$phone->getId()] = $phone->getData();
