@@ -3,6 +3,6 @@
     <menu>
         <add id="Dudchenko_Phones::phones" title="Phones" translate="title" module="Dudchenko_Phones" sortOrder="51" resource="Magento_Backend::content"/>
         <add id="Dudchenko_Phones::phone_listing" title="Phones Listing" translate="title" module="Dudchenko_Phones" sortOrder="10" resource="Magento_Backend::content" parent="Dudchenko_Phones::phones" action="phones/index/" />
-        <add id="Dudchenko_Phones::phone_config" title="Config" translate="title" module="Dudchenko_Phones" sortOrder="20" resource="Magento_Backend::content" parent="Dudchenko_Phones::phones" action="phones/index/config" />
+        <add id="Dudchenko_Phones::phone_config" title="Config" translate="title" module="Dudchenko_Phones" sortOrder="20" resource="Magento_Backend::content" parent="Dudchenko_Phones::phones" action="adminhtml/system_config/edit/section/phones_general" />
     </menu>
 </config>
