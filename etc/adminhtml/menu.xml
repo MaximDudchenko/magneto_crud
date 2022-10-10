@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
     <menu>
-        <add id="Dudchenko_Phones::phones" title="Phones" translate="title" module="Dudchenko_Phones" sortOrder="51" resource="Magento_Backend::content"/>
-        <add id="Dudchenko_Phones::phone_listing" title="Phones Listing" translate="title" module="Dudchenko_Phones" sortOrder="10" resource="Magento_Backend::content" parent="Dudchenko_Phones::phones" action="phones/index/" />
-        <add id="Dudchenko_Phones::phone_config" title="Config" translate="title" module="Dudchenko_Phones" sortOrder="20" resource="Magento_Backend::content" parent="Dudchenko_Phones::phones" action="adminhtml/system_config/edit/section/phones_general" />
+        <add id="Dudchenko_Phones::phones" title="Phones" translate="title" module="Dudchenko_Phones" sortOrder="50" resource="Dudchenko_Phones::phones"/>
+        <add id="Dudchenko_Phones::phone_listing" title="Phone Listing" translate="title" module="Dudchenko_Phones" sortOrder="10" resource="Dudchenko_Phones::phone_listing" parent="Dudchenko_Phones::phones" action="phones/index/" />
+        <add id="Dudchenko_Phones::phone_config" title="Configuration" translate="title" module="Dudchenko_Phones" sortOrder="20" resource="Dudchenko_Phones::phone_config" parent="Dudchenko_Phones::phones" action="adminhtml/system_config/edit/section/phones_general" />
     </menu>
 </config>
