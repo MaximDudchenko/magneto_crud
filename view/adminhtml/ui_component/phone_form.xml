@@ -3,13 +3,8 @@
     <argument name="data" xsi:type="array">
         <item name="js_config" xsi:type="array">
             <item name="provider" xsi:type="string">phone_form.phone_form_data_source</item>
-            <item name="deps" xsi:type="string">phone_form.phone_form_data_source</item>
         </item>
         <item name="label" xsi:type="string" translate="true">Phone Information</item>
-        <item name="config" xsi:type="array">
-            <item name="dataScope" xsi:type="string">data</item>
-            <item name="namespace" xsi:type="string">phone_form</item>
-        </item>
         <item name="template" xsi:type="string">templates/form/collapsible</item>
     </argument>
     <settings>
@@ -20,16 +15,10 @@
         <namespace>phone_form</namespace>
         <dataScope>data</dataScope>
         <deps>
-            <dep>phone_form.block_form_data_source</dep>
+            <dep>phone_form.phone_form_data_source</dep>
         </deps>
     </settings>
     <dataSource name="phone_form_data_source">
-        <argument name="dataProvider" xsi:type="configurableObject">
-            <argument name="class" xsi:type="string">Dudchenko\Phones\Model\DataProvider</argument>
-            <argument name="name" xsi:type="string">phone_form_data_source</argument>
-            <argument name="primaryFieldName" xsi:type="string">entity_id</argument>
-            <argument name="requestFieldName" xsi:type="string">entity_id</argument>
-        </argument>
         <argument name="data" xsi:type="array">
             <item name="js_config" xsi:type="array">
                 <item name="component" xsi:type="string">Magento_Ui/js/form/provider</item>
@@ -38,6 +27,12 @@
         <settings>
             <submitUrl path="phones/index/save"/>
         </settings>
+        <dataProvider class="Dudchenko\Phones\Model\DataProvider" name="phone_form_data_source">
+            <settings>
+                <requestFieldName>entity_id</requestFieldName>
+                <primaryFieldName>entity_id</primaryFieldName>
+            </settings>
+        </dataProvider>
     </dataSource>
     <fieldset name="phone_details">
         <settings>
