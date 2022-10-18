@@ -2,6 +2,8 @@
 
 namespace Dudchenko\Phones\Api\Data;
 
+use DateTime;
+
 interface PhoneInterface
 {
     const ENTITY_ID = 'entity_id';
@@ -9,6 +11,8 @@ interface PhoneInterface
     const MODEL = 'model';
     const PRICE = 'price';
     const QUANTITY = 'quantity';
+    const CREATED_AT = 'created_at';
+    const UPDATED_AT = 'updated_at';
 
     /**
      * @return mixed
@@ -34,6 +38,17 @@ interface PhoneInterface
      * @return int
      */
     public function getQuantity(): int;
+
+
+    /**
+     * @return DateTime
+     */
+    public function getCreatedAt(): DateTime;
+
+    /**
+     * @return DateTime
+     */
+    public function getUpdatedAt(): DateTime;
 
     /**
      * @param mixed $value
@@ -64,4 +79,16 @@ interface PhoneInterface
      * @return mixed
      */
     public function setQuantity(int $quantity);
+
+    /**
+     * @param DateTime $created_at
+     * @return mixed
+     */
+    public function setCreatedAt(DateTime $created_at);
+
+    /**
+     * @param DateTime $updated_at
+     * @return mixed
+     */
+    public function setUpdatedAt(DateTime $updated_at);
 }

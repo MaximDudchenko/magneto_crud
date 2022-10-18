@@ -2,6 +2,7 @@
 
 namespace Dudchenko\Phones\Controller\Adminhtml\Index;
 
+use Dudchenko\Phones\Api\Data\PhoneInterface;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Backend\Model\View\Result\Redirect;
@@ -9,6 +10,8 @@ use Magento\Backend\Model\View\Result\RedirectFactory as ResultRedirectFactory;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\ResultInterface;
 use Dudchenko\Phones\Api\PhoneRepositoryInterface;
+use Magento\Framework\Exception\CouldNotDeleteException;
+use Magento\Framework\Exception\NoSuchEntityException;
 
 class Delete extends Action
 {
@@ -47,23 +50,17 @@ class Delete extends Action
         /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
         $resultRedirect = $this->resultRedirectFactory->create();
 
-        $id = $this->getRequest()->getParam('entity_id');
-        if ($id) {
-            try {
-                $this->phoneRepository->deleteById($id);
+        try {
+            $this->phoneRepository->deleteById($this->getRequest()->getParam(PhoneInterface::ENTITY_ID));
 
-                $this->messageManager->addSuccessMessage(__('You deleted the phone.'));
-
-                return $resultRedirect->setPath('*/*/');
-            } catch (\Exception $e) {
-
-                $this->messageManager->addErrorMessage($e->getMessage());
-
-                return $resultRedirect->setPath('*/*/edit', ['entity_id' => $id]);
-            }
+            $this->messageManager->addSuccessMessage(__('You deleted the phone.'));
+        } catch (NoSuchEntityException $e) {
+            $this->messageManager->addErrorMessage(__('We can\'t find a phone to delete.'));
+        } catch (CouldNotDeleteException $e) {
+            $this->messageManager->addErrorMessage(__('We can\'t delete a phone.'));
+        } catch (\Exception $e) {
+            $this->messageManager->addErrorMessage($e->getMessage());
         }
-
-        $this->messageManager->addErrorMessage(__('We can\'t find a phone to delete.'));
 
         return $resultRedirect->setPath('*/*/');
     }

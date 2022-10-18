@@ -9,16 +9,12 @@ class Config extends AbstractHelper
 {
     const XML_PATH_PHONES_GENERAL = 'phones_general/';
 
-    public function getConfigValue($field, $storeId = null)
+    public function isModuleEnable(): bool
     {
-        return $this->scopeConfig->getValue(
-            $field, ScopeInterface::SCOPE_STORE, $storeId
-        );
-    }
-
-    public function getGeneralConfig($field, $storeId = null)
-    {
-        return $this->getConfigValue(self::XML_PATH_PHONES_GENERAL .'general/'. $field, $storeId);
+        return $this->scopeConfig->isSetFlag(
+            self::XML_PATH_PHONES_GENERAL . 'general/enable',
+            ScopeInterface::SCOPE_STORE,
+            null);
     }
 
 }

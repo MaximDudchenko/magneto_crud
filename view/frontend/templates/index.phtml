@@ -16,7 +16,7 @@ $phoneCollection = $viewModel->getPhoneCollection();
     </div>
     <br>
     <div class="block-content">
-        <a class="action primary" href="<?= $escaper->escapeUrl($block->getUrl('phones/index/create')) ?>">Add new Entity</a>
+        <a class="action primary" href="<?= $escaper->escapeUrl($block->getUrl('phones/index/create')) ?>"><?= __('Add new Entity') ?></a>
         <table>
             <tr>
                 <th><?= __('ID') ?></th>
@@ -33,8 +33,12 @@ $phoneCollection = $viewModel->getPhoneCollection();
                     <td><?= $escaper->escapeHtml($phone->getModel()) ?></td>
                     <td><?= $escaper->escapeHtml($viewModel->getPrice($phone)) ?></td>
                     <td><?= $escaper->escapeHtml($phone->getQuantity()) ?></td>
-                    <td><a href="<?= $escaper->escapeUrl($block->getUrl('phones/index/edit').'entity_id/'.$phone->getId()); ?>" class="action primary">Edit</a></td>
-                    <td><a href="<?= $escaper->escapeUrl($block->getUrl('phones/index/delete').'?entity_id='.$phone->getId()); ?>" class="action primary">Delete</a></td>
+                    <td><a href="<?= $escaper->escapeUrl($block->getUrl('phones/index/edit', ['entity_id' => $phone->getId()])); ?>" class="action primary"><?= __('Edit') ?></a></td>
+                    <td>
+                        <form method="post" action="<?= $escaper->escapeUrl($block->getUrl('phones/index/delete')) ?>">
+                            <input type="number" id="entity_id" name="entity_id" class="input-text" value="<?= $escaper->escapeHtml($phone->getId()) ?>" hidden>
+                            <button class="action primary" type="submit"><?= __('Delete') ?></button>
+                        </form>
                 </tr>
             <?php endforeach; ?>
         </table>

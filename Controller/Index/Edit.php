@@ -2,17 +2,21 @@
 
 namespace Dudchenko\Phones\Controller\Index;
 
-use Magento\Framework\App\Action\Action;
-use Magento\Framework\App\Action\Context;
+use Dudchenko\Phones\Api\Data\PhoneInterface;
+use Magento\Framework\App\Action\HttpGetActionInterface;
+use Magento\Framework\App\RequestInterface;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\Result\Forward;
+use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Controller\ResultInterface;
-use Magento\Framework\Registry as CoreRegistry;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\View\Result\Page;
 use Magento\Framework\Controller\ResultFactory;
 use Dudchenko\Phones\Helper\Config as ConfigHelper;
+use Magento\Framework\Message\ManagerInterface as MessageManagerInterface;
+use Dudchenko\Phones\Api\PhoneRepositoryInterface;
 
-class Edit extends Action
+class Edit implements HttpGetActionInterface
 {
     /**
      * @var ConfigHelper
@@ -25,42 +29,65 @@ class Edit extends Action
     protected $resultFactory;
 
     /**
-     * @var CoreRegistry
+     * @var PhoneRepositoryInterface
      */
-    protected $coreRegistry;
+    protected $phoneRepository;
 
     /**
-     * @param Context $context
-     * @param ResultFactory $resultPageFactory
+     * @var RequestInterface
+     */
+    protected $request;
+
+    /**
+     * @var MessageManagerInterface
+     */
+    protected $messageManager;
+
+    /**
+     * @param ResultFactory $resultFactory
      * @param ConfigHelper $configHelper
-     * @param CoreRegistry $coreRegistry
+     * @param PhoneRepositoryInterface $phoneRepository
+     * @param RequestInterface $request
+     * @param MessageManagerInterface $messageManager
      */
     public function __construct(
-        Context $context,
-        ResultFactory $resultPageFactory,
+        ResultFactory $resultFactory,
         ConfigHelper $configHelper,
-        CoreRegistry $coreRegistry
+        PhoneRepositoryInterface $phoneRepository,
+        RequestInterface $request,
+        MessageManagerInterface $messageManager
     ) {
-        $this->resultPageFactory = $resultPageFactory;
+        $this->resultFactory = $resultFactory;
         $this->configHelper = $configHelper;
-        $this->coreRegistry = $coreRegistry;
-        parent::__construct($context);
+        $this->phoneRepository = $phoneRepository;
+        $this->request = $request;
+        $this->messageManager = $messageManager;
     }
 
+
     /**
-     * @return ResponseInterface|Forward|Forward&ResultInterface|ResultInterface|Page|Page&ResultInterface
+     * @return ResponseInterface|Forward|Forward&ResultInterface|Redirect|Redirect&ResultInterface|ResultInterface|Page|Page&ResultInterface
      */
     public function execute()
     {
-        $moduleEnable = $this->configHelper->getGeneralConfig('enable');
-
-        if ($moduleEnable == 0) {
+        if (!$this->configHelper->isModuleEnable()) {
             return $this->resultFactory->create(ResultFactory::TYPE_FORWARD)->forward('defaultNoRoute');
         }
 
-        $id = $this->_request->getParam('entity_id');
-        $this->coreRegistry->register('editRecordId', $id);
+        $id = $this->request->getParam(PhoneInterface::ENTITY_ID);
 
-        return $this->resultFactory->create(ResultFactory::TYPE_PAGE);
+        try {
+            /** @var \Dudchenko\Phones\Model\Phone $phone */
+            $phone = $this->phoneRepository->getById($id);
+
+            return $this->resultFactory->create(ResultFactory::TYPE_PAGE);
+        } catch (NoSuchEntityException $e) {
+            $this->messageManager->addErrorMessage(__('This phone not exists.'));
+        } catch (Exception $e) {
+            $this->messageManager->addErrorMessage($e->getMessage());
+        }
+        return $this->resultFactory->create(ResultFactory::TYPE_REDIRECT)->setPath('*/*/');
+
+
     }
 }

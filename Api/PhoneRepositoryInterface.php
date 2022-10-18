@@ -14,7 +14,7 @@ interface PhoneRepositoryInterface
     public function save(PhoneInterface $phone): PhoneInterface;
 
     /**
-     * @param int $id
+     * @param int|null $id
      * @return PhoneInterface
      */
     public function getById($id): PhoneInterface;

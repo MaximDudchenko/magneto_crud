@@ -2,22 +2,28 @@
 
 namespace Dudchenko\Phones\Controller\Index;
 
+use Dudchenko\Phones\Api\Data\PhoneInterface;
 use Magento\Backend\Model\View\Result\Redirect;
-use Magento\Framework\App\Action\Action;
-use Magento\Framework\App\Action\Context;
 use Dudchenko\Phones\Model\PhoneFactory;
 use Dudchenko\Phones\Api\PhoneRepositoryInterface;
-use Magento\Backend\Model\View\Result\RedirectFactory as ResultRedirectFactory;
+use Magento\Framework\App\Action\Action;
+use Magento\Framework\App\RequestInterface;
+use Magento\Framework\Controller\ResultFactory;
+use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\ResultInterface;
+use Magento\Framework\Exception\CouldNotSaveException;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Message\ManagerInterface as MessageManagerInterface;
 
 
-class Save extends Action
+
+class Save implements HttpPostActionInterface
 {
     /**
-     * @var ResultRedirectFactory
+     * @var ResultFactory
      */
-    protected $resultRedirectFactory;
+    protected $resultFactory;
 
     /**
      * @var PhoneFactory
@@ -30,22 +36,35 @@ class Save extends Action
     protected $phoneRepository;
 
     /**
-     * @param Context $context
-     * @param ResultRedirectFactory $resultRedirectFactory
+     * @var RequestInterface
+     */
+    protected $request;
+
+    /**
+     * @var MessageManagerInterface
+     */
+    protected $messageManager;
+
+    /**
+     * @param ResultFactory $resultFactory
      * @param PhoneFactory $phoneFactory
      * @param PhoneRepositoryInterface $phoneRepository
+     * @param RequestInterface $request
+     * @param MessageManagerInterface $messageManager
      */
     public function __construct(
-        Context $context,
-        ResultRedirectFactory $resultRedirectFactory,
+        ResultFactory $resultFactory,
         PhoneFactory $phoneFactory,
-        PhoneRepositoryInterface $phoneRepository
+        PhoneRepositoryInterface $phoneRepository,
+        RequestInterface $request,
+        MessageManagerInterface $messageManager
     )
     {
-        $this->resultRedirectFactory = $resultRedirectFactory;
+        $this->resultFactory = $resultFactory;
         $this->phoneFactory = $phoneFactory;
         $this->phoneRepository = $phoneRepository;
-        return parent::__construct($context);
+        $this->request = $request;
+        $this->messageManager = $messageManager;
     }
 
     /**
@@ -53,27 +72,34 @@ class Save extends Action
      */
     public function execute()
     {
-        /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
-        $resultRedirect = $this->resultRedirectFactory->create();
+        $input = $this->request->getParams();
 
-        if ($this->getRequest()->isPost()) {
-            $input = $this->getRequest()->getPostValue();
-            if ($input) {
-                $input['entity_id'] = empty($input['entity_id']) ? null  : $input['entity_id'];
-                $id = $input['entity_id'];
-
-                /** @var \Dudchenko\Phones\Model\Phone $phone */
-                $phone = $this->phoneFactory->create();
-
-                if ($id) {
-                    $phone = $this->phoneRepository->getById($id);
-                }
-
-                $phone->setData($input);
-
-                $this->phoneRepository->save($phone);
-            }
-            return $resultRedirect->setPath('phones/index/');
+        if (!$input) {
+            return $this->resultFactory->create(ResultFactory::TYPE_REDIRECT)->setPath('*/*/');
         }
+
+        /** @var \Dudchenko\Phones\Model\Phone $phone */
+        $phone = $this->phoneFactory->create();
+        $id = $this->request->getParam(PhoneInterface::ENTITY_ID);
+        try {
+            if ($id) {
+                $phone = $this->phoneRepository->getById($id);
+            }
+
+            $phone->setData($input);
+
+            $this->phoneRepository->save($phone);
+
+            $this->messageManager->addSuccessMessage(__('You saved the phone.'));
+
+            return $this->resultFactory->create(ResultFactory::TYPE_REDIRECT)->setPath('*/*/');
+        } catch (NoSuchEntityException $e) {
+            $this->messageManager->addErrorMessage(__('We can\'t find a phone'));
+        } catch (CouldNotSaveException $e) {
+            $this->messageManager->addErrorMessage(__('We can\'t save a phone'));
+        } catch (\Exception $e) {
+            $this->messageManager->addErrorMessage($e->getMessage());
+        }
+        return $this->resultFactory->create(ResultFactory::TYPE_REDIRECT)->setPath('*/*/edit', [PhoneInterface::ENTITY_ID => $id]);
     }
 }

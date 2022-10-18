@@ -2,6 +2,7 @@
 
 namespace Dudchenko\Phones\Controller\Adminhtml\Index;
 
+use Dudchenko\Phones\Api\Data\PhoneInterface;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Backend\Model\View\Result\Redirect;
@@ -9,7 +10,9 @@ use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Framework\App\Request\DataPersistorInterface;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\ResultInterface;
+use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Registry as CoreRegistry;
 use Dudchenko\Phones\Model\PhoneFactory;
 use Magento\Backend\Model\View\Result\RedirectFactory as ResultRedirectFactory;
@@ -75,52 +78,39 @@ class Save extends Action implements HttpPostActionInterface
     {
         /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
         $resultRedirect = $this->resultRedirectFactory->create();
+
         $input = $this->getRequest()->getPostValue();
 
-        if ($input) {
-            $input['entity_id'] = empty($input['entity_id']) ? null  : $input['entity_id'];
-            $id = $input['entity_id'];
+        if (!$input) {
+            return $resultRedirect->setPath('*/*/');
+        }
 
-            /** @var \Dudchenko\Phones\Model\Phone $phone */
-            $phone = $this->phoneFactory->create();
-
+        /** @var \Dudchenko\Phones\Model\Phone $phone */
+        $phone = $this->phoneFactory->create();
+        $id = $this->getRequest()->getParam(PhoneInterface::ENTITY_ID);
+        try {
             if ($id) {
-                try {
-                    $phone = $this->phoneRepository->getById($id);
-                } catch (LocalizedException $e) {
-                    $this->messageManager->addErrorMessage(__('This phone no longer exists.'));
-                    return $resultRedirect->setPath('*/*/');
-                }
+                $phone = $this->phoneRepository->getById($id);
             }
 
             $phone->setData($input);
 
-            try {
-                $this->phoneRepository->save($phone);
-                dd('saved');
-                $this->messageManager->addSuccessMessage(__('You saved the phone.'));
-                $this->dataPersistor->clear('phone');
-                return $this->redirect($resultRedirect);
-            } catch (LocalizedException $e) {
-                $this->messageManager->addErrorMessage($e->getMessage());
-            } catch (\Exception $e) {
-                $this->messageManager->addExceptionMessage($e, __('Something went wrong while saving the phone.'));
-            }
+            $this->phoneRepository->save($phone);
 
-            $this->dataPersistor->set('phone', $input);
-            return $resultRedirect->setPath('*/*/edit', ['entity_id' => $id]);
-        }
-        return $resultRedirect->setPath('*/*/');
-    }
+            $this->messageManager->addSuccessMessage(__('You saved the phone.'));
 
-    private function redirect($resultRedirect)
-    {
-        $redirect = $data['back'] ?? 'close';
+            $this->dataPersistor->clear('phone');
 
-        if ($redirect === 'close') {
-            $resultRedirect->setPath('*/*/');
+            return $resultRedirect->setPath('*/*/');;
+        } catch (NoSuchEntityException $e) {
+            $this->messageManager->addErrorMessage(__('We can\'t find a phone'));
+        } catch (CouldNotSaveException $e) {
+            $this->messageManager->addErrorMessage(__('We can\'t save a phone'));
+        } catch (\Exception $e) {
+            $this->messageManager->addErrorMessage($e->getMessage());
         }
 
-        return $resultRedirect;
+        $this->dataPersistor->set('phone', $input);
+        return $resultRedirect->setPath('*/*/edit', [PhoneInterface::ENTITY_ID => $id]);
     }
 }

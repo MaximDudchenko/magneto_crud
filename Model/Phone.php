@@ -2,6 +2,7 @@
 
 namespace Dudchenko\Phones\Model;
 
+use DateTime;
 use Dudchenko\Phones\Api\Data\PhoneInterface;
 use Magento\Framework\DataObject\IdentityInterface;
 use Magento\Framework\Model\AbstractModel;
@@ -69,6 +70,22 @@ class Phone extends AbstractModel implements PhoneInterface, IdentityInterface
     }
 
     /**
+     * @return DateTime
+     */
+    public function getCreatedAt(): DateTime
+    {
+        return $this->getData(self::CREATED_AT);
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getUpdatedAt(): DateTime
+    {
+        return $this->getData(self::UPDATED_AT);
+    }
+
+    /**
      * @param string $brand
      * @return PhoneInterface
      */
@@ -102,5 +119,23 @@ class Phone extends AbstractModel implements PhoneInterface, IdentityInterface
     public function setQuantity(int $quantity): PhoneInterface
     {
         return $this->setData(self::QUANTITY, $quantity);
+    }
+
+    /**
+     * @param DateTime $created_at
+     * @return Phone|mixed
+     */
+    public function setCreatedAt(DateTime $created_at)
+    {
+        return $this->setData(self::CREATED_AT, $created_at);
+    }
+
+    /**
+     * @param DateTime $updated_at
+     * @return Phone|mixed
+     */
+    public function setUpdatedAt(DateTime $updated_at)
+    {
+        return $this->setData(self::UPDATED_AT, $updated_at);
     }
 }

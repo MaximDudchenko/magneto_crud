@@ -2,17 +2,22 @@
 
 namespace Dudchenko\Phones\Controller\Index;
 
-use Magento\Backend\Model\View\Result\Redirect;
-use Magento\Framework\App\Action\Action;
-use Magento\Framework\App\Action\Context;
+use Dudchenko\Phones\Api\Data\PhoneInterface;
 use Dudchenko\Phones\Api\PhoneRepositoryInterface;
 use Dudchenko\Phones\Helper\Config as ConfigHelper;
+use Magento\Framework\App\Action\HttpPostActionInterface;
+use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Controller\Result\Forward;
+use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\ResultInterface;
+use Magento\Framework\Exception\CouldNotDeleteException;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Message\ManagerInterface as MessageManagerInterface;
+use Magento\Framework\App\Action\Context;
 
-class Delete extends Action
+class Delete implements HttpPostActionInterface
 {
     /**
      * @var ConfigHelper
@@ -29,40 +34,58 @@ class Delete extends Action
      */
     protected $phoneRepository;
 
+    /**
+     * @var RequestInterface
+     */
+    protected $request;
 
     /**
-     * @param Context $context
+     * @var MessageManagerInterface
+     */
+    protected $messageManager;
+
+    /**
      * @param ResultFactory $resultFactory
      * @param ConfigHelper $configHelper
      * @param PhoneRepositoryInterface $phoneRepository
+     * @param RequestInterface $request
      */
     public function __construct(
-        Context $context,
         ResultFactory $resultFactory,
         ConfigHelper $configHelper,
-        PhoneRepositoryInterface $phoneRepository
+        PhoneRepositoryInterface $phoneRepository,
+        RequestInterface $request,
+        MessageManagerInterface $messageManager
     )
     {
         $this->resultFactory = $resultFactory;
         $this->configHelper = $configHelper;
         $this->phoneRepository = $phoneRepository;
-        parent::__construct($context);
+        $this->request = $request;
+        $this->messageManager = $messageManager;
     }
 
     /**
-     * @return ResponseInterface|Forward|Forward&ResultInterface|\Magento\Framework\Controller\Result\Redirect|\Magento\Framework\Controller\Result\Redirect&ResultInterface|ResultInterface
+     * @return ResponseInterface|Forward|Forward&ResultInterface|Redirect|Redirect&ResultInterface|ResultInterface
      */
     public function execute()
     {
-        $moduleEnable = $this->configHelper->getGeneralConfig('enable');
-
-        if ($moduleEnable == 0) {
+        if (!$this->configHelper->isModuleEnable()) {
             return $this->resultFactory->create(ResultFactory::TYPE_FORWARD)->forward('defaultNoRoute');
         }
 
-        $id = $this->_request->getParam('entity_id');
-        $this->phoneRepository->deleteById($id);
+        try {
+            $this->phoneRepository->deleteById($this->request->getParam(PhoneInterface::ENTITY_ID));
 
-        return $this->resultFactory->create(ResultFactory::TYPE_REDIRECT)->setPath('phones/index/');
+            $this->messageManager->addSuccessMessage(__('You deleted the phone.'));
+        } catch (NoSuchEntityException $e) {
+            $this->messageManager->addErrorMessage(__('We can\'t find a phone to delete.'));
+        } catch (CouldNotDeleteException $e) {
+            $this->messageManager->addErrorMessage(__('We can\'t delete a phone.'));
+        } catch (\Exception $e) {
+            $this->messageManager->addErrorMessage($e->getMessage());
+        }
+
+        return $this->resultFactory->create(ResultFactory::TYPE_REDIRECT)->setPath('*/*/');
     }
 }
