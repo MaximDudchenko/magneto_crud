@@ -54,12 +54,10 @@ class Delete extends Action
             $this->phoneRepository->deleteById($this->getRequest()->getParam(PhoneInterface::ENTITY_ID));
 
             $this->messageManager->addSuccessMessage(__('You deleted the phone.'));
-        } catch (NoSuchEntityException $e) {
-            $this->messageManager->addErrorMessage(__('We can\'t find a phone to delete.'));
-        } catch (CouldNotDeleteException $e) {
-            $this->messageManager->addErrorMessage(__('We can\'t delete a phone.'));
-        } catch (\Exception $e) {
+        } catch (NoSuchEntityException|CouldNotDeleteException $e) {
             $this->messageManager->addErrorMessage($e->getMessage());
+        } catch (\Exception $e) {
+            $this->messageManager->addErrorMessage(__('Oops, something went wrong!'));
         }
 
         return $resultRedirect->setPath('*/*/');

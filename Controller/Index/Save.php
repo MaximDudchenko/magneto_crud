@@ -93,12 +93,10 @@ class Save implements HttpPostActionInterface
             $this->messageManager->addSuccessMessage(__('You saved the phone.'));
 
             return $this->resultFactory->create(ResultFactory::TYPE_REDIRECT)->setPath('*/*/');
-        } catch (NoSuchEntityException $e) {
-            $this->messageManager->addErrorMessage(__('We can\'t find a phone'));
-        } catch (CouldNotSaveException $e) {
-            $this->messageManager->addErrorMessage(__('We can\'t save a phone'));
-        } catch (\Exception $e) {
+        } catch (NoSuchEntityException|CouldNotSaveException $e) {
             $this->messageManager->addErrorMessage($e->getMessage());
+        } catch (\Exception $e) {
+            $this->messageManager->addErrorMessage(__('Oops, something went wrong!'));
         }
         return $this->resultFactory->create(ResultFactory::TYPE_REDIRECT)->setPath('*/*/edit', [PhoneInterface::ENTITY_ID => $id]);
     }

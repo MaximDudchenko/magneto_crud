@@ -76,7 +76,7 @@ class PhoneRepository implements PhoneRepositoryInterface
         try {
             $this->resource->save($phone);
         } catch (\Exception $exception) {
-            throw new CouldNotSaveException(__($exception->getMessage()));
+            throw new CouldNotSaveException(__('Phone with the "%1" ID can\'t save', $phone->getId()));
         }
         return $phone;
     }
@@ -94,7 +94,7 @@ class PhoneRepository implements PhoneRepositoryInterface
         $this->resource->load($phone, $id);
 
         if (!$phone->getId()) {
-            throw new NoSuchEntityException(__('The CMS block with the "%1" ID doesn\'t exist.', $id));
+            throw new NoSuchEntityException(__('Phone with the "%1" ID doesn\'t exist.', $id));
         }
         return $phone;
     }
@@ -154,7 +154,7 @@ class PhoneRepository implements PhoneRepositoryInterface
         try {
             $this->resource->delete($phone);
         } catch (\Exception $exception) {
-            throw new CouldNotDeleteException(__($exception->getMessage()));
+            throw new CouldNotDeleteException(__('Phone with the "%1" ID can\'t delete', $phone->getId()));
         }
         return true;
     }

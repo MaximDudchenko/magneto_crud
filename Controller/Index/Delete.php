@@ -78,12 +78,10 @@ class Delete implements HttpPostActionInterface
             $this->phoneRepository->deleteById($this->request->getParam(PhoneInterface::ENTITY_ID));
 
             $this->messageManager->addSuccessMessage(__('You deleted the phone.'));
-        } catch (NoSuchEntityException $e) {
-            $this->messageManager->addErrorMessage(__('We can\'t find a phone to delete.'));
-        } catch (CouldNotDeleteException $e) {
-            $this->messageManager->addErrorMessage(__('We can\'t delete a phone.'));
-        } catch (\Exception $e) {
+        } catch (NoSuchEntityException|CouldNotDeleteException $e) {
             $this->messageManager->addErrorMessage($e->getMessage());
+        }  catch (\Exception $e) {
+            $this->messageManager->addErrorMessage(__('Oops, something went wrong!'));
         }
 
         return $this->resultFactory->create(ResultFactory::TYPE_REDIRECT)->setPath('*/*/');

@@ -102,12 +102,10 @@ class Save extends Action implements HttpPostActionInterface
             $this->dataPersistor->clear('phone');
 
             return $resultRedirect->setPath('*/*/');;
-        } catch (NoSuchEntityException $e) {
-            $this->messageManager->addErrorMessage(__('We can\'t find a phone'));
-        } catch (CouldNotSaveException $e) {
-            $this->messageManager->addErrorMessage(__('We can\'t save a phone'));
-        } catch (\Exception $e) {
+        } catch (NoSuchEntityException|CouldNotSaveException $e) {
             $this->messageManager->addErrorMessage($e->getMessage());
+        } catch (\Exception $e) {
+            $this->messageManager->addErrorMessage(__('Oops, something went wrong!'));
         }
 
         $this->dataPersistor->set('phone', $input);

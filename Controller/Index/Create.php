@@ -42,7 +42,6 @@ class Create implements HttpGetActionInterface
         if (!$this->configHelper->isModuleEnable()) {
             return $this->resultFactory->create(ResultFactory::TYPE_FORWARD)->forward('defaultNoRoute');
         }
-
         return $this->resultFactory->create(ResultFactory::TYPE_PAGE);
     }
 }
